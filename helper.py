@@ -19,7 +19,6 @@ def get_json_for_user(user):
         "birthday": user['birthday'],
         'interests': list_to_string(user['interests']),
         'friends': list_to_string_friends(user['friends']),
-        "relationship": list_to_string_friends(user['relationship']),
         'last_time_friend_seen': list_to_string_friends(user['last_time_friend_seen']),
         'reminder_for_friend': list_to_string_friends(user['reminder_for_friend']),
     }

@@ -1,0 +1,10 @@
+sitting, biking
+lazy, active
+sports, politics
+movies, jogging
+movies, biking
+video games, jogging
+video games, swimming
+sports, academics
+sports, engineering
+art, engineering
