@@ -12,5 +12,3 @@ machine learning, computer science
 food, eating
 restaurants, food
 video games, gaming
-
-
