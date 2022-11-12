@@ -12,6 +12,7 @@ def get_json_for_user(user):
         'interests': list_to_string(user['interests']),
         'hobbies': list_to_string(user['hobbies']),
         'friends': list_to_string(user['friends']),
+        "relationship": list_to_string(user['relationship']),
         'last_time_friend_seen': list_to_string(user['last_time_friend_seen']),
         'reminder_for_friend': list_to_string(user['reminder_for_friend'])
     }

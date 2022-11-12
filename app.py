@@ -37,6 +37,7 @@ def add_user():
         "interests": interests,
         "hobbies": hobbies,
         "friends": [],
+        "relationship": [],
         "last_time_friend_seen": [],
         "reminder_for_friend": []
     })
@@ -57,25 +58,11 @@ def update_user(username):
         "interests": data['interests'],
         "hobbies": data['hobbies'],
         "friends": data['friends'],
+        "relationship": [],
         "last_time_friend_seen": data['last_time_friend_seen'],
         "reminder_for_friend": data['reminder_for_friend']
     })
     return "Added User!"
-
-# #test to insert data to the data base
-# @app.route("/test", methods=['POST'])
-# def test():
-#     db.user_collection.insert_one({
-#         "username": "amkumar",
-#         "password": "password",
-#         "name": "Arnav Kumar",
-#         "interests": ["Sports", "Cats"],
-#         "hobbies": ["Bowling", "Arcades"],
-#         "friends": [],
-#         "last_time_friend_seen": [],
-#         "reminder_for_friend": []
-#     })
-#     return "Connected to the data base!"
 
 if __name__ == '__main__':
     app.run(port=8000)
