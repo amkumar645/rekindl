@@ -2,7 +2,7 @@ import spacy
 import numpy as np
 import pickle
 
-nlp = pickle.load(open('npl_md.pkl', 'rb'))
+nlp = pickle.load(open('nlp_md.pkl', 'rb'))
 
 # testing for threshold value
 # words we want the model to report as similar
