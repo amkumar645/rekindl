@@ -8,7 +8,7 @@ from datetime import date, datetime
 
 app = Flask(__name__)
 
-# nlp = pickle.load(open('npl_md.pkl', 'rb'))
+# nlp = pickle.load(open('nlp_md.pkl', 'rb'))
 
 @app.route('/', methods=['GET'])
 def index():
