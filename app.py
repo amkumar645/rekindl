@@ -7,7 +7,6 @@ import numpy as np
 from datetime import date, datetime
 from flask_cors import CORS, cross_origin
 
-
 app = Flask(__name__)
 CORS(app)
 
