@@ -39,21 +39,24 @@ def get_all_users():
 @app.route('/users/add', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def add_user():
-    data = request.form
-    interests = data['interests'].split(",")
-    print(type(data['birthday']))
-    db.user_collection.insert_one({
-        "username": data['username'],
-        "password": data['password'],
-        "name": data['name'],
-        "location": data['location'],
-        "birthday": data['birthday'],
-        "interests": interests,
-        "friends": [],
-        "last_time_friend_seen": [],
-        "reminder_for_friend": [],
-    })
-    return "Added User!"
+    if request.method == 'POST':
+        data = request.form
+        if data['username'] == '':
+            return jsonify("Bad")
+        interests = data['interests'].split(",")
+        print(type(data['birthday']))
+        db.user_collection.insert_one({
+            "username": data['username'],
+            "password": data['password'],
+            "name": data['name'],
+            "location": data['location'],
+            "birthday": data['birthday'],
+            "interests": interests,
+            "friends": [],
+            "last_time_friend_seen": [],
+            "reminder_for_friend": [],
+        })
+        return jsonify("Added User!")
 
 # Update user
 @app.route('/users/update/<username>', methods=['POST'])
