@@ -169,6 +169,7 @@ def get_interests(username):
     sortedNames = [username, otherUsername]
     sortedNames.sort()
 
+    # determine if database already contains the pair
     if(db.common_interests_collection.count_documents({"userNameCombo": sortedNames[0] + sortedNames[1]}) == 0):
         db.common_interests_collection.insert_one({
             "userNameCombo": sortedNames[0] + sortedNames[1],
