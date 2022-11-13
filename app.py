@@ -105,86 +105,86 @@ def upcoming_friends(username):
         friends_json.append(helper.get_json_for_user(user))
     return jsonify(friends_json)
 
-# Match user to a friend based on criteria
-@app.route('/match/<username>', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def find_match(username):
-    familiarity = int(request.args.get('fam'))
-    topic = request.args.get('topic')
-    user = db.user_collection.find_one({'username': username})
-    friends = []
-    # Get list of all friends
-    for i, friend in enumerate(user['friends']):
-        friend_det = db.user_collection.find_one({'username': friend})
-        friends.append([friend_det, user['last_time_friend_seen'][i]])
-    # Sort friends by familiarity
-    # If they chose unfamiliar, get someone they haven't talked to in a while
-    if familiarity == 0:
-        friends.sort(key=lambda x: x[1], reverse=True)
-    else:
-        friends.sort(key=lambda x: x[0], reverse=True)
-    # Then check for topics in common between interests with NLP
+# # Match user to a friend based on criteria
+# @app.route('/match/<username>', methods=['GET'])
+# @cross_origin(supports_credentials=True)
+# def find_match(username):
+#     familiarity = int(request.args.get('fam'))
+#     topic = request.args.get('topic')
+#     user = db.user_collection.find_one({'username': username})
+#     friends = []
+#     # Get list of all friends
+#     for i, friend in enumerate(user['friends']):
+#         friend_det = db.user_collection.find_one({'username': friend})
+#         friends.append([friend_det, user['last_time_friend_seen'][i]])
+#     # Sort friends by familiarity
+#     # If they chose unfamiliar, get someone they haven't talked to in a while
+#     if familiarity == 0:
+#         friends.sort(key=lambda x: x[1], reverse=True)
+#     else:
+#         friends.sort(key=lambda x: x[0], reverse=True)
+#     # Then check for topics in common between interests with NLP
 
-# Get all users
-@app.route('/match/interests/<username>', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def get_interests(username):
-    user = db.user_collection.find_one({'username': username})
-    interests = user['interests']
+# # Get all users
+# @app.route('/match/interests/<username>', methods=['GET'])
+# @cross_origin(supports_credentials=True)
+# def get_interests(username):
+#     user = db.user_collection.find_one({'username': username})
+#     interests = user['interests']
 
-    otherUsername = request.args.get('otherUsername')
-    otherUsernameUser = db.user_collection.find_one({'username': otherUsername})
-    otherUserInterests = otherUsernameUser['interests']
+#     otherUsername = request.args.get('otherUsername')
+#     otherUsernameUser = db.user_collection.find_one({'username': otherUsername})
+#     otherUserInterests = otherUsernameUser['interests']
 
-    def common_interests(p1, p2):
-        w = [9.05503054, -4.69843102]      # from logistic regression in nlp_testing.py
-        m = len(p1)
-        n = len(p2)
-        common_interests = []
-        common_similarities = []
-        for i in range(m):
-            for j in range(n):
-                similarity = nlp(p1[i]).similarity(nlp(p2[j]))
-                if w[0] * similarity + w[1] >= 0:
-                    common_interests.append((p1[i], p2[j]))
-                    common_similarities.append(similarity)
+#     def common_interests(p1, p2):
+#         w = [9.05503054, -4.69843102]      # from logistic regression in nlp_testing.py
+#         m = len(p1)
+#         n = len(p2)
+#         common_interests = []
+#         common_similarities = []
+#         for i in range(m):
+#             for j in range(n):
+#                 similarity = nlp(p1[i]).similarity(nlp(p2[j]))
+#                 if w[0] * similarity + w[1] >= 0:
+#                     common_interests.append((p1[i], p2[j]))
+#                     common_similarities.append(similarity)
         
-        num_common = len(common_interests)
-        top_two = []
-        if num_common > 0:
-            max_index = np.argmax(common_similarities)
-            top_two.append(common_interests[max_index])
-            common_similarities[max_index] = -1
-            if num_common > 1:
-                next_max_index = np.argmax(common_similarities)
-                top_two.append(common_interests[next_max_index])
+#         num_common = len(common_interests)
+#         top_two = []
+#         if num_common > 0:
+#             max_index = np.argmax(common_similarities)
+#             top_two.append(common_interests[max_index])
+#             common_similarities[max_index] = -1
+#             if num_common > 1:
+#                 next_max_index = np.argmax(common_similarities)
+#                 top_two.append(common_interests[next_max_index])
         
-        return top_two
+#         return top_two
     
-    common_interests = common_interests(interests, otherUserInterests)
+#     common_interests = common_interests(interests, otherUserInterests)
     
-    comm_json = {
-        'common_interests' :  [common_interests[0], common_interests[1]]
-    }
+#     comm_json = {
+#         'common_interests' :  [common_interests[0], common_interests[1]]
+#     }
 
-    # database update
-    sortedNames = [username, otherUsername]
-    sortedNames.sort()
+#     # database update
+#     sortedNames = [username, otherUsername]
+#     sortedNames.sort()
 
-    # determine if database already contains the pair
-    if(db.common_interests_collection.count_documents({"userNameCombo": sortedNames[0] + sortedNames[1]}) == 0):
-        db.common_interests_collection.insert_one({
-            "userNameCombo": sortedNames[0] + sortedNames[1],
-            "common_interests": [common_interests[0], common_interests[1]],
-        })
+#     # determine if database already contains the pair
+#     if(db.common_interests_collection.count_documents({"userNameCombo": sortedNames[0] + sortedNames[1]}) == 0):
+#         db.common_interests_collection.insert_one({
+#             "userNameCombo": sortedNames[0] + sortedNames[1],
+#             "common_interests": [common_interests[0], common_interests[1]],
+#         })
 
-    else:
-        db.common_interests_collection.update_one({"userNameCombo": sortedNames[0] + sortedNames[1]}, {"$set":{
-            "userNameCombo": sortedNames[0] + sortedNames[1],
-            "common_interests": [common_interests[0], common_interests[1]],
-        }})
+#     else:
+#         db.common_interests_collection.update_one({"userNameCombo": sortedNames[0] + sortedNames[1]}, {"$set":{
+#             "userNameCombo": sortedNames[0] + sortedNames[1],
+#             "common_interests": [common_interests[0], common_interests[1]],
+#         }})
         
-    return jsonify(comm_json)
+#     return jsonify(comm_json)
 
 if __name__ == '__main__':
     app.run(port=10001, debug=True)
