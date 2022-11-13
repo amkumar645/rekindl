@@ -39,8 +39,8 @@ def get_all_users():
 @cross_origin(supports_credentials=True)
 def add_user():
     data = request.form
-    print(data)
     interests = data['interests'].split(",")
+    print(type(data['birthday']))
     db.user_collection.insert_one({
         "username": data['username'],
         "password": data['password'],
@@ -102,7 +102,25 @@ def upcoming_friends(username):
         friends_json.append(helper.get_json_for_user(user))
     return jsonify(friends_json[0:3])
 
-
+# Match user to a friend based on criteria
+@app.route('/match/<username>', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def find_match(username):
+    familiarity = int(request.args.get('fam'))
+    topic = request.args.get('topic')
+    user = db.user_collection.find_one({'username': username})
+    friends = []
+    # Get list of all friends
+    for i, friend in enumerate(user['friends']):
+        friend_det = db.user_collection.find_one({'username': friend})
+        friends.append([friend_det, user['last_time_friend_seen'][i]])
+    # Sort friends by familiarity
+    # If they chose unfamiliar, get someone they haven't talked to in a while
+    if familiarity == 0:
+        friends.sort(key=lambda x: x[1], reverse=True)
+    else:
+        friends.sort(key=lambda x: x[0], reverse=True)
+    # Then check for topics in common between interests with NLP
 
 if __name__ == '__main__':
     app.run(port=10001, debug=True)
