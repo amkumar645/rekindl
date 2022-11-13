@@ -4,9 +4,11 @@ import helper
 import spacy
 import pickle
 from datetime import date, datetime
+from flask_cors import CORS, cross_origin
 
 
 app = Flask(__name__)
+CORS(app)
 
 # nlp = pickle.load(open('nlp_md.pkl', 'rb'))
 
@@ -16,6 +18,7 @@ def index():
 
 # Get user
 @app.route('/users/<username>', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def get_user(username):
     user = db.user_collection.find_one({'username': username})
     user_json = helper.get_json_for_user(user)
@@ -23,6 +26,7 @@ def get_user(username):
 
 # Get all users
 @app.route('/users/all', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def get_all_users():
     users = db.user_collection.find()
     users_json = []
@@ -32,8 +36,10 @@ def get_all_users():
 
 # Add user
 @app.route('/users/add', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def add_user():
     data = request.form
+    print(data)
     interests = data['interests'].split(",")
     db.user_collection.insert_one({
         "username": data['username'],
@@ -50,6 +56,7 @@ def add_user():
 
 # Update user
 @app.route('/users/update/<username>', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def update_user(username):
     data = request.form
     interests = data['interests'].split(",")
@@ -75,6 +82,7 @@ def update_user(username):
 
 # Get upcoming deadlines for a user's friends
 @app.route('/upcoming/<username>', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def upcoming_friends(username):
     today = date.today()
     today = datetime.strptime(str(today), "%Y-%m-%d")
@@ -97,4 +105,4 @@ def upcoming_friends(username):
 
 
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
+    app.run(port=10001, debug=True)
