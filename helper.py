@@ -1,3 +1,5 @@
+import numpy as np
+
 def list_to_string(list):
     s = ''
     for item in list:

@@ -8,3 +8,7 @@ video games, swimming
 sports, academics
 sports, engineering
 art, engineering
+architecture, computer science
+hiking, biking
+swimming, biking
+gymnastics, football
