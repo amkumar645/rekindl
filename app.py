@@ -100,10 +100,10 @@ def upcoming_friends(username):
             late_friends.append(overall_info)
     late_friends.sort(key=lambda x: x[0], reverse=True)
     friends_json = []
-    for friend in late_friends[0:1]:
+    for friend in late_friends[0:4]:
         user = db.user_collection.find_one({'username': friend[1]})
         friends_json.append(helper.get_json_for_user(user))
-    return jsonify(friends_json[0:3])
+    return jsonify(friends_json)
 
 # Match user to a friend based on criteria
 @app.route('/match/<username>', methods=['GET'])
