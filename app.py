@@ -10,7 +10,7 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 CORS(app)
 
-nlp = pickle.load(open('nlp_md.pkl', 'rb'))
+# nlp = pickle.load(open('nlp_md.pkl', 'rb'))
 
 @app.route('/', methods=['GET'])
 def index():
